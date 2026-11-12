@@ -1,0 +1,902 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+LeafVision AI | Intelligent Tomato Plant Health
+{% endblock %}
+
+{% block content %}
+
+{% macro tr(en, mr) -%}
+    {%- if current_language|default('en') == 'mr' -%}
+        {{ mr }}
+    {%- else -%}
+        {{ en }}
+    {%- endif -%}
+{%- endmacro %}
+
+<style>
+:root {
+    --lv-deep: #052f26;
+    --lv-green: #00a878;
+    --lv-bright: #2ed39b;
+    --lv-mint: #dff9ef;
+    --lv-text: #123f35;
+    --lv-muted: #6c8980;
+    --lv-white: #ffffff;
+}
+
+.lv-home, .lv-section, .lv-cta {
+    font-family: inherit;
+    color: var(--lv-text);
+}
+
+.lv-home {
+    position: relative;
+    padding: 65px 6% 45px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 8% 12%, rgba(46,211,155,.2), transparent 28%),
+        radial-gradient(circle at 92% 18%, rgba(0,168,120,.15), transparent 27%),
+        linear-gradient(135deg,#f5fffb,#eaf9f3 48%,#f7fffc);
+}
+
+.lv-grid {
+    position: absolute;
+    inset: 0;
+    opacity: .22;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(0,120,90,.07) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,120,90,.07) 1px,transparent 1px);
+    background-size: 50px 50px;
+}
+
+.lv-hero {
+    position: relative;
+    z-index: 2;
+    max-width: 1250px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    align-items: center;
+    gap: 45px;
+    min-height: 520px;
+}
+
+.lv-copy h1 {
+    margin: 24px 0;
+    font-size: clamp(42px,5.3vw,72px);
+    line-height: 1.04;
+    letter-spacing: -3px;
+    color: var(--lv-deep);
+    font-weight: 950;
+}
+
+.lv-copy h1 span,
+.lv-section-head h2 span,
+.lv-cta h2 span {
+    display: block;
+    color: var(--lv-green);
+}
+
+.lv-kicker, .lv-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 16px;
+    border: 1px solid #c9eee1;
+    border-radius: 30px;
+    background: rgba(255,255,255,.8);
+    color: #008766;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.lv-live {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--lv-bright);
+    box-shadow: 0 0 0 5px rgba(46,211,155,.13);
+}
+
+.lv-description {
+    max-width: 580px;
+    color: var(--lv-muted);
+    font-size: 16px;
+    line-height: 1.9;
+}
+
+.lv-actions, .lv-proof {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 13px;
+}
+
+.lv-actions {
+    margin: 28px 0;
+}
+
+.lv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 22px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 850;
+    transition: .25s;
+}
+
+.lv-btn:hover {
+    transform: translateY(-3px);
+}
+
+.lv-btn.primary {
+    color: white;
+    background: linear-gradient(135deg,#009c77,#17c99a);
+    box-shadow: 0 12px 25px rgba(0,168,120,.2);
+}
+
+.lv-btn.secondary {
+    color: #007d61;
+    border: 1px solid #bce7d9;
+    background: rgba(255,255,255,.8);
+}
+
+.lv-proof {
+    gap: 17px;
+    color: #64867b;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.lv-proof span::first-letter {
+    color: var(--lv-green);
+}
+
+.lv-visual {
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lv-ring {
+    position: absolute;
+    border: 1px solid rgba(0,168,120,.13);
+    border-radius: 50%;
+}
+
+.lv-ring.r1 { width: 300px; height: 300px; }
+.lv-ring.r2 { width: 390px; height: 390px; }
+.lv-ring.r3 { width: 470px; height: 470px; }
+
+.lv-panel {
+    z-index: 2;
+    width: min(100%,390px);
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 30px;
+    background: rgba(255,255,255,.75);
+    box-shadow: 0 25px 70px rgba(0,80,60,.13);
+    backdrop-filter: blur(16px);
+}
+
+.lv-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.lv-status {
+    margin-left: auto;
+    color: var(--lv-green);
+    font-size: 9px;
+}
+
+.lv-scan-area {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 190px;
+    border: 1px solid #ccefe2;
+    border-radius: 23px;
+    background: linear-gradient(145deg,#effff8,#dcf8ec);
+    overflow: hidden;
+}
+
+.lv-leaf {
+    font-size: 105px;
+    animation: lvFloat 3s ease-in-out infinite;
+    filter: drop-shadow(0 10px 10px rgba(0,100,70,.12));
+}
+
+.lv-corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: #13c99a;
+    border-style: solid;
+}
+
+.lv-corner.tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; }
+.lv-corner.tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; }
+.lv-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; }
+.lv-corner.br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; }
+
+.lv-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding: 15px;
+    border: 1px solid #d7eee5;
+    border-radius: 17px;
+    background: white;
+}
+
+.lv-result small, .lv-result strong {
+    display: block;
+}
+
+.lv-result small {
+    color: #77978c;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 1px;
+}
+
+.lv-result strong {
+    margin-top: 7px;
+    font-size: 13px;
+}
+
+.lv-score {
+    color: var(--lv-green);
+    font-size: 29px;
+    font-weight: 950;
+}
+
+.lv-progress {
+    height: 7px;
+    margin: 12px 0;
+    border-radius: 20px;
+    background: #dcefe8;
+    overflow: hidden;
+}
+
+.lv-progress span {
+    display: block;
+    width: 97%;
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg,#00a878,#50e6b5);
+}
+
+.lv-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    color: #608477;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.lv-float-card {
+    position: absolute;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid #e0f2eb;
+    border-radius: 17px;
+    background: rgba(255,255,255,.95);
+    box-shadow: 0 12px 35px rgba(0,80,60,.1);
+}
+
+.lv-float-card.a { top: 55px; left: -10px; }
+.lv-float-card.b { right: -5px; bottom: 55px; }
+
+.lv-float-icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #e5faf1;
+    font-size: 19px;
+}
+
+.lv-float-card strong, .lv-float-card span {
+    display: block;
+}
+
+.lv-float-card strong { font-size: 11px; }
+.lv-float-card span { margin-top: 4px; color: #6c8980; font-size: 9px; }
+
+.lv-insights {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 14px;
+    max-width: 1250px;
+    margin: 45px auto 0;
+}
+
+.lv-insight {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 18px;
+    border: 1px solid #d9eee7;
+    border-radius: 20px;
+    background: rgba(255,255,255,.8);
+    box-shadow: 0 12px 30px rgba(0,80,60,.04);
+}
+
+.lv-insight-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    background: #e4f8ef;
+    font-size: 21px;
+}
+
+.lv-insight strong, .lv-insight small {
+    display: block;
+}
+
+.lv-insight strong { font-size: 11px; }
+.lv-insight small { margin-top: 5px; color: var(--lv-muted); font-size: 9px; }
+
+.lv-section {
+    padding: 75px 6%;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.lv-section-head {
+    max-width: 760px;
+    margin: 0 auto 35px;
+    text-align: center;
+}
+
+.lv-section-head h2, .lv-cta h2 {
+    margin: 20px 0 12px;
+    color: #0a4438;
+    font-size: clamp(30px,4vw,46px);
+    letter-spacing: -1.8px;
+}
+
+.lv-section-head h2 span { display: inline; }
+
+.lv-section-head p, .lv-cta p {
+    color: #708a82;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.lv-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 17px;
+}
+
+.lv-feature {
+    position: relative;
+    padding: 25px;
+    border: 1px solid #d9eee7;
+    border-radius: 23px;
+    background: white;
+    box-shadow: 0 15px 38px rgba(0,80,60,.06);
+    transition: .3s;
+}
+
+.lv-feature:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 25px 48px rgba(0,80,60,.11);
+}
+
+.lv-feature-num {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    color: #d8efe8;
+    font-size: 30px;
+    font-weight: 950;
+}
+
+.lv-feature-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+    background: #eaf9f4;
+    font-size: 23px;
+}
+
+.lv-feature h3 {
+    margin: 18px 0 9px;
+    color: #164f43;
+    font-size: 16px;
+}
+
+.lv-feature p {
+    color: #718b84;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.lv-process {
+    padding: 45px;
+    border-radius: 30px;
+    color: white;
+    background: linear-gradient(135deg,#063d31,#075646);
+    box-shadow: 0 30px 70px rgba(0,70,50,.18);
+}
+
+.lv-process h2 {
+    margin: 0 0 30px;
+    font-size: clamp(26px,4vw,36px);
+}
+
+.lv-process h2 span { color: #54e0b1; }
+
+.lv-steps {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 20px;
+}
+
+.lv-step-num {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgba(84,224,177,.22);
+    border-radius: 13px;
+    color: #72edc4;
+    background: rgba(84,224,177,.14);
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.lv-step h3 { margin: 15px 0 7px; font-size: 15px; }
+.lv-step p { color: #b8d6cd; font-size: 12px; line-height: 1.8; }
+
+.lv-cta {
+    padding: 75px 6% 95px;
+    text-align: center;
+}
+
+.lv-cta h2 {
+    max-width: 760px;
+    margin: 20px auto;
+}
+
+.lv-cta h2 span { display: inline; }
+
+.lv-cta p {
+    max-width: 680px;
+    margin: 0 auto 25px;
+}
+
+@keyframes lvFloat {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@media(max-width:1050px) {
+    .lv-hero { grid-template-columns: 1fr; gap: 25px; }
+    .lv-copy { text-align: center; }
+    .lv-description { margin: auto; }
+    .lv-actions, .lv-proof { justify-content: center; }
+
+    .lv-insights, .lv-feature-grid, .lv-steps {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+    }
+
+    .lv-visual { min-height: 480px; }
+}
+
+@media(max-width:650px) {
+    .lv-home { padding: 40px 5% 30px; }
+    .lv-copy h1 { font-size: 43px; letter-spacing: -2px; }
+    .lv-description { font-size: 14px; }
+    .lv-visual { min-height: 420px; }
+    .lv-panel { padding: 17px; }
+    .lv-scan-area { height: 175px; }
+    .lv-leaf { font-size: 85px; }
+
+    .lv-ring.r1 { width: 270px; height: 270px; }
+    .lv-ring.r2 { width: 340px; height: 340px; }
+    .lv-ring.r3 { width: 400px; height: 400px; }
+
+    .lv-float-card.a { left: -5px; top: 25px; }
+    .lv-float-card.b { right: -5px; bottom: 30px; }
+
+    .lv-insights, .lv-feature-grid, .lv-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .lv-section { padding: 50px 5%; }
+    .lv-process { padding: 28px 22px; }
+    .lv-tags { font-size: 8px; }
+}
+</style>
+
+<div class="lv-home">
+    <div class="lv-grid"></div>
+
+    <section class="lv-hero">
+        <div class="lv-copy">
+
+            <div class="lv-kicker">
+                <span class="lv-live"></span>
+                {{ tr('🍅 AI-POWERED TOMATO HEALTH',
+                      '🍅 AI-आधारित टोमॅटो आरोग्य') }}
+            </div>
+
+            <h1>
+                {{ tr('See the problem.', 'समस्या ओळखा.') }}
+                <span>{{ tr('Save the plant.', 'रोप वाचवा.') }}</span>
+            </h1>
+
+            <p class="lv-description">
+                {{ tr(
+                    'LeafVision AI turns tomato plant images into clear, understandable disease insights — helping farmers detect problems early and take better action.',
+                    'LeafVision AI टोमॅटोच्या रोपांच्या छायाचित्रांमधून रोगांविषयी स्पष्ट माहिती देते. त्यामुळे शेतकऱ्यांना समस्या लवकर ओळखून योग्य उपाय करता येतात.'
+                ) }}
+            </p>
+
+            <div class="lv-actions">
+                {% if current_user %}
+                    {% if current_role == "farmer" %}
+                        <a href="{{ url_for('farmer_dashboard') }}"
+                           class="lv-btn primary">
+                            👨‍🌾 {{ tr('Open Farmer Dashboard',
+                                       'शेतकरी डॅशबोर्ड उघडा') }}
+                        </a>
+
+                    {% elif current_role == "admin" %}
+                        <a href="{{ url_for('admin_dashboard') }}"
+                           class="lv-btn primary">
+                            👨‍💼 {{ tr('Open Admin Dashboard',
+                                        'प्रशासक डॅशबोर्ड उघडा') }}
+                        </a>
+
+                    {% else %}
+                        <a href="{{ url_for('analyze') }}"
+                           class="lv-btn primary">
+                            🔬 {{ tr('Analyze My Plant',
+                                      'माझ्या रोपाचे विश्लेषण करा') }}
+                        </a>
+
+                        <a href="{{ url_for('history') }}"
+                           class="lv-btn secondary">
+                            📊 {{ tr('View History', 'इतिहास पहा') }}
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('login') }}"
+                       class="lv-btn primary">
+                        🔬 {{ tr('Start AI Analysis',
+                                  'AI विश्लेषण सुरू करा') }} →
+                    </a>
+
+                    <a href="{{ url_for('signup') }}"
+                       class="lv-btn secondary">
+                        🌱 {{ tr('Create Account', 'खाते तयार करा') }}
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="lv-proof">
+                <span>{{ tr('✓ Image-based detection',
+                            '✓ प्रतिमेद्वारे रोग ओळख') }}</span>
+                <span>{{ tr('✓ Tomato-focused AI',
+                            '✓ टोमॅटो-केंद्रित AI') }}</span>
+                <span>{{ tr('✓ Farmer-friendly results',
+                            '✓ शेतकऱ्यांसाठी सोपे परिणाम') }}</span>
+            </div>
+        </div>
+
+        <div class="lv-visual">
+            <div class="lv-ring r1"></div>
+            <div class="lv-ring r2"></div>
+            <div class="lv-ring r3"></div>
+
+            <div class="lv-float-card a">
+                <div class="lv-float-icon">🧠</div>
+                <div>
+                    <strong>{{ tr('AI Vision', 'AI दृश्य विश्लेषण') }}</strong>
+                    <span>{{ tr('Scanning plant',
+                                'रोपाचे परीक्षण सुरू आहे') }}</span>
+                </div>
+            </div>
+
+            <div class="lv-panel">
+                <div class="lv-panel-head">
+                    <span class="lv-live"></span>
+                    LEAFVISION AI
+                    <span class="lv-status">
+                        {{ tr('● SYSTEM READY', '● प्रणाली तयार') }}
+                    </span>
+                </div>
+
+                <div class="lv-scan-area">
+                    <div class="lv-corner tl"></div>
+                    <div class="lv-corner tr"></div>
+                    <div class="lv-corner bl"></div>
+                    <div class="lv-corner br"></div>
+                    <div class="lv-leaf">🌿</div>
+                </div>
+
+                <div class="lv-result">
+                    <div>
+                        <small>
+                            {{ tr('PLANT HEALTH ANALYSIS',
+                                  'रोपाच्या आरोग्याचे विश्लेषण') }}
+                        </small>
+                        <strong>
+                            {{ tr('AI SCAN READY', 'AI स्कॅन तयार') }}
+                        </strong>
+                    </div>
+                    <div class="lv-score">97%</div>
+                </div>
+
+                <div class="lv-progress"><span></span></div>
+
+                <div class="lv-tags">
+                    <span>{{ tr('🍃 Leaf', '🍃 पान') }}</span>
+                    <span>{{ tr('🌱 Stem', '🌱 खोड') }}</span>
+                    <span>{{ tr('🌿 Whole Plant', '🌿 संपूर्ण रोप') }}</span>
+                    <span>{{ tr('✨ AI Vision', '✨ AI दृश्य विश्लेषण') }}</span>
+                </div>
+            </div>
+
+            <div class="lv-float-card b">
+                <div class="lv-float-icon">⚡</div>
+                <div>
+                    <strong>{{ tr('Early Detection', 'लवकर ओळख') }}</strong>
+                    <span>{{ tr('Act before it spreads',
+                                'रोग पसरण्यापूर्वी उपाय करा') }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lv-insights">
+        <div class="lv-insight">
+            <div class="lv-insight-icon">🔬</div>
+            <div>
+                <strong>{{ tr('AI Disease Detection',
+                              'AI द्वारे रोग ओळख') }}</strong>
+                <small>{{ tr('Image-based analysis',
+                             'प्रतिमेवर आधारित विश्लेषण') }}</small>
+            </div>
+        </div>
+
+        <div class="lv-insight">
+            <div class="lv-insight-icon">📸</div>
+            <div>
+                <strong>{{ tr('Multi-Part Evidence',
+                              'विविध भागांचे पुरावे') }}</strong>
+                <small>{{ tr('Leaf • Stem • Root • Plant',
+                             'पान • खोड • मुळे • रोप') }}</small>
+            </div>
+        </div>
+
+        <div class="lv-insight">
+            <div class="lv-insight-icon">👨‍🌾</div>
+            <div>
+                <strong>{{ tr('Expert Guidance',
+                              'तज्ज्ञांचे मार्गदर्शन') }}</strong>
+                <small>{{ tr('Practical farming support',
+                             'शेतीसाठी उपयुक्त मदत') }}</small>
+            </div>
+        </div>
+
+        <div class="lv-insight">
+            <div class="lv-insight-icon">📈</div>
+            <div>
+                <strong>{{ tr('Analysis History',
+                              'विश्लेषणाचा इतिहास') }}</strong>
+                <small>{{ tr('Track previous results',
+                             'मागील परिणाम पाहा') }}</small>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="lv-section">
+    <div class="lv-section-head">
+        <div class="lv-label">
+            {{ tr('WHY LEAFVISION AI', 'LEAFVISION AI का?') }}
+        </div>
+
+        <h2>
+            {{ tr('A smarter way to understand',
+                  'समजून घेण्याचा अधिक स्मार्ट मार्ग') }}
+            <span>{{ tr('plant health.', 'रोपांचे आरोग्य.') }}</span>
+        </h2>
+
+        <p>
+            {{ tr(
+                'Designed to make AI-based tomato disease analysis simple, visual and useful for everyday farming decisions.',
+                'AI-आधारित टोमॅटो रोग विश्लेषण सोपे आणि दैनंदिन शेतीच्या निर्णयांसाठी उपयुक्त बनवण्यासाठी तयार केले आहे.'
+            ) }}
+        </p>
+    </div>
+
+    <div class="lv-feature-grid">
+        <article class="lv-feature">
+            <div class="lv-feature-num">01</div>
+            <div class="lv-feature-icon">🧠</div>
+            <h3>{{ tr('AI Disease Detection',
+                      'AI द्वारे रोग ओळख') }}</h3>
+            <p>
+                {{ tr(
+                    'Analyze tomato plant images and view the predicted condition in an easy-to-understand format.',
+                    'टोमॅटोच्या रोपांच्या छायाचित्रांचे विश्लेषण करून संभाव्य स्थिती सोप्या भाषेत पाहा.'
+                ) }}
+            </p>
+        </article>
+
+        <article class="lv-feature">
+            <div class="lv-feature-num">02</div>
+            <div class="lv-feature-icon">📸</div>
+            <h3>{{ tr('Multi-Image Evidence',
+                      'अनेक छायाचित्रांचा वापर') }}</h3>
+            <p>
+                {{ tr(
+                    'Upload leaf, stem, root and whole-plant images to provide more visual information.',
+                    'अधिक माहिती देण्यासाठी पान, खोड, मुळे आणि संपूर्ण रोपाची छायाचित्रे अपलोड करा.'
+                ) }}
+            </p>
+        </article>
+
+        <article class="lv-feature">
+            <div class="lv-feature-num">03</div>
+            <div class="lv-feature-icon">🌾</div>
+            <h3>{{ tr('Farmer Support', 'शेतकरी सहाय्य') }}</h3>
+            <p>
+                {{ tr(
+                    'Connect plant analysis with practical agricultural guidance when expert advice is available.',
+                    'तज्ज्ञांचा सल्ला उपलब्ध असल्यास रोपाच्या विश्लेषणासोबत व्यावहारिक कृषी मार्गदर्शन मिळवा.'
+                ) }}
+            </p>
+        </article>
+
+        <article class="lv-feature">
+            <div class="lv-feature-num">04</div>
+            <div class="lv-feature-icon">📊</div>
+            <h3>{{ tr('Track Your Analyses',
+                      'तुमच्या विश्लेषणांचा मागोवा घ्या') }}</h3>
+            <p>
+                {{ tr(
+                    'Review previous analysis results to monitor observations over time.',
+                    'वेळोवेळी निरीक्षण करण्यासाठी मागील विश्लेषणांचे परिणाम पाहा.'
+                ) }}
+            </p>
+        </article>
+    </div>
+</section>
+
+<section class="lv-section">
+    <div class="lv-process">
+        <h2>
+            {{ tr('From plant image to useful insight.',
+                  'रोपाच्या छायाचित्रापासून उपयुक्त माहितीकडे.') }}
+        </h2>
+
+        <div class="lv-steps">
+            <div class="lv-step">
+                <div class="lv-step-num">01</div>
+                <h3>{{ tr('Upload', 'अपलोड करा') }}</h3>
+                <p>
+                    {{ tr(
+                        'Provide a clear image of your tomato plant.',
+                        'टोमॅटोच्या रोपाचे स्पष्ट छायाचित्र अपलोड करा.'
+                    ) }}
+                </p>
+            </div>
+
+            <div class="lv-step">
+                <div class="lv-step-num">02</div>
+                <h3>{{ tr('AI Analysis', 'AI विश्लेषण') }}</h3>
+                <p>
+                    {{ tr(
+                        'The system analyzes the submitted image.',
+                        'प्रणाली दिलेल्या छायाचित्राचे विश्लेषण करते.'
+                    ) }}
+                </p>
+            </div>
+
+            <div class="lv-step">
+                <div class="lv-step-num">03</div>
+                <h3>{{ tr('Understand', 'समजून घ्या') }}</h3>
+                <p>
+                    {{ tr(
+                        'View the predicted condition and confidence information.',
+                        'संभाव्य स्थिती आणि विश्वास पातळी पाहा.'
+                    ) }}
+                </p>
+            </div>
+
+            <div class="lv-step">
+                <div class="lv-step-num">04</div>
+                <h3>{{ tr('Take Action', 'योग्य उपाय करा') }}</h3>
+                <p>
+                    {{ tr(
+                        'Use suitable agricultural guidance to plan your next step.',
+                        'पुढील पाऊल ठरवण्यासाठी योग्य कृषी मार्गदर्शन वापरा.'
+                    ) }}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="lv-cta">
+    <div class="lv-label">
+        {{ tr('READY TO CHECK YOUR PLANT?',
+              'तुमच्या रोपाची तपासणी करण्यास तयार आहात?') }}
+    </div>
+
+    <h2>
+        {{ tr('Give your tomato plants',
+              'तुमच्या टोमॅटोच्या रोपांना द्या') }}
+        <span>
+            {{ tr('an intelligent advantage.',
+                  'स्मार्ट तंत्रज्ञानाची साथ.') }}
+        </span>
+    </h2>
+
+    <p>
+        {{ tr(
+            'Start with one clear image and let LeafVision AI analyze it.',
+            'एका स्पष्ट छायाचित्रापासून सुरुवात करा आणि LeafVision AI ला त्याचे विश्लेषण करू द्या.'
+        ) }}
+    </p>
+
+    {% if not current_user %}
+        <div class="lv-actions" style="justify-content:center;">
+            <a href="{{ url_for('signup') }}" class="lv-btn primary">
+                🌱 {{ tr('Get Started', 'सुरू करा') }} →
+            </a>
+
+            <a href="{{ url_for('login') }}" class="lv-btn secondary">
+                {{ tr('Login', 'लॉगिन करा') }}
+            </a>
+        </div>
+
+    {% elif current_role == "user" %}
+        <div class="lv-actions" style="justify-content:center;">
+            <a href="{{ url_for('analyze') }}" class="lv-btn primary">
+                🔬 {{ tr('Analyze My Plant',
+                          'माझ्या रोपाचे विश्लेषण करा') }}
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

@@ -1,0 +1,388 @@
+
+{% extends "base.html" %}
+
+{% block title %}Unsupported Plant | LeafVision AI{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Keep all styles limited to this page */
+    .unsupported-view,
+    .unsupported-view * {
+        box-sizing: border-box;
+    }
+
+    .unsupported-view {
+        width: 100%;
+        padding: 38px 20px 55px;
+        color: #183f35;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .unsupported-view .uv-container {
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    /* Page heading */
+    .unsupported-view .uv-heading {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+    .unsupported-view .uv-icon {
+        width: 74px;
+        height: 74px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 22px;
+        background: #dff5e9;
+        font-size: 36px;
+    }
+
+    .unsupported-view .uv-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 15px;
+        border: 1px solid #f1d7a4;
+        border-radius: 30px;
+        background: #fff8e9;
+        color: #8c601c;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .unsupported-view .uv-heading h1 {
+        margin: 15px 0 10px;
+        color: #08634f;
+        font-size: clamp(27px, 4vw, 36px);
+        line-height: 1.25;
+        font-weight: 800;
+    }
+
+    .unsupported-view .uv-heading p {
+        max-width: 650px;
+        margin: 0 auto;
+        color: #627970;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    /* Main card */
+    .unsupported-view .uv-card {
+        width: 100%;
+        padding: 32px;
+        border: 1px solid #dcece4;
+        border-radius: 24px;
+        background: #ffffff;
+        box-shadow: 0 12px 36px rgba(15, 75, 55, 0.10);
+    }
+
+    /* Uploaded image */
+    .unsupported-view .uv-image-layout {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 25px;
+    }
+
+    .unsupported-view .uv-image-frame {
+        width: 100%;
+        max-width: 390px;
+        height: 280px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 12px;
+        border: 1px solid #e0ece5;
+        border-radius: 18px;
+        background: #f5faf7;
+    }
+
+    .unsupported-view .uv-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        border-radius: 10px;
+    }
+
+    /* Explanation */
+    .unsupported-view .uv-card h2 {
+        margin: 0 0 10px;
+        text-align: center;
+        color: #08634f;
+        font-size: clamp(21px, 3vw, 26px);
+        line-height: 1.4;
+    }
+
+    .unsupported-view .uv-description {
+        max-width: 660px;
+        margin: 0 auto 25px;
+        text-align: center;
+        color: #627970;
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+    /* Confidence cards */
+    .unsupported-view .uv-confidence-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin: 25px 0;
+    }
+
+    .unsupported-view .uv-confidence-card {
+        min-width: 0;
+        padding: 22px;
+        border: 1px solid #dfeee6;
+        border-radius: 16px;
+        background: #f8fcfa;
+    }
+
+    .unsupported-view .uv-label {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 13px;
+        color: #557368;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .unsupported-view .uv-label-icon {
+        font-size: 20px;
+    }
+
+    .unsupported-view .uv-value {
+        display: block;
+        margin-bottom: 14px;
+        color: #087e5c;
+        font-size: 28px;
+        line-height: 1.2;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .unsupported-view .uv-track {
+        width: 100%;
+        height: 9px;
+        overflow: hidden;
+        border-radius: 20px;
+        background: #e1ece6;
+    }
+
+    .unsupported-view .uv-bar {
+        height: 100%;
+        border-radius: 20px;
+    }
+
+    .unsupported-view .uv-tomato-bar {
+        background: #13a477;
+    }
+
+    .unsupported-view .uv-other-bar {
+        background: #e4a33f;
+    }
+
+    /* Upload guidance */
+    .unsupported-view .uv-tip {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 24px 0;
+        padding: 17px 18px;
+        border: 1px solid #f0e1bc;
+        border-radius: 14px;
+        background: #fffaf0;
+    }
+
+    .unsupported-view .uv-tip-icon {
+        font-size: 22px;
+    }
+
+    .unsupported-view .uv-tip p {
+        margin: 0;
+        color: #765d33;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    /* Main action */
+    .unsupported-view .uv-button {
+        display: flex;
+        width: fit-content;
+        min-height: 49px;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 27px auto 0;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 12px;
+        background: #087d5c;
+        color: #ffffff !important;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none !important;
+        box-shadow: 0 5px 14px rgba(8, 125, 92, 0.16);
+        transition: background 0.2s, transform 0.2s;
+    }
+
+    .unsupported-view .uv-button:hover {
+        background: #056548;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+    }
+
+    .unsupported-view .uv-button-icon {
+        font-size: 19px;
+    }
+
+    .unsupported-view .uv-footer {
+        margin: 24px 0 0;
+        color: #8aa197;
+        font-size: 11px;
+        text-align: center;
+    }
+
+    /* Tablet and mobile */
+    @media (max-width: 650px) {
+        .unsupported-view {
+            padding: 24px 12px 35px;
+        }
+
+        .unsupported-view .uv-card {
+            padding: 22px 15px;
+            border-radius: 18px;
+        }
+
+        .unsupported-view .uv-confidence-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 12px;
+        }
+
+        .unsupported-view .uv-image-frame {
+            height: 235px;
+        }
+
+        .unsupported-view .uv-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="unsupported-view">
+    <div class="uv-container">
+
+        <header class="uv-heading">
+            <div class="uv-icon">🍅</div>
+
+            <div class="uv-badge">
+                ⚠️ {{ t('unsupported_plant') }}
+            </div>
+
+            <h1>{{ t('unsupported_plant') }}</h1>
+
+            <p>
+                This image could not be verified as a tomato plant.
+                Please upload a clear tomato leaf or plant image.
+            </p>
+        </header>
+
+        <main class="uv-card">
+
+            {% if leaf_image %}
+            <div class="uv-image-layout">
+                <div class="uv-image-frame">
+                    <img
+                        src="{{ url_for('uploaded_file', filename=leaf_image) }}"
+                        alt="Uploaded unsupported plant"
+                        class="uv-image"
+                    >
+                </div>
+            </div>
+            {% endif %}
+
+            <h2>{{ t('upload_tomato') }}</h2>
+
+            <p class="uv-description">
+                LeafVision AI is designed to detect diseases in tomato
+                plants only. Images of potato, brinjal, chilli, or other
+                plants should be checked using a suitable plant model.
+                Please upload a supported tomato plant image to continue.
+            </p>
+
+            <div class="uv-confidence-grid">
+
+                <div class="uv-confidence-card">
+                    <div class="uv-label">
+                        <span class="uv-label-icon">🍅</span>
+                        <span>Tomato confidence</span>
+                    </div>
+
+                    {% set tc = tomato_confidence|default(0)|float %}
+
+                    <strong class="uv-value">
+                        {{ "%.2f"|format(tc) }}%
+                    </strong>
+
+                    <div class="uv-track">
+                        <div
+                            class="uv-bar uv-tomato-bar"
+                            style="width: {{ [[tc, 0]|max, 100]|min }}%;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="uv-confidence-card">
+                    <div class="uv-label">
+                        <span class="uv-label-icon">🌿</span>
+                        <span>Other plant confidence</span>
+                    </div>
+
+                    {% set oc = other_confidence|default(0)|float %}
+
+                    <strong class="uv-value">
+                        {{ "%.2f"|format(oc) }}%
+                    </strong>
+
+                    <div class="uv-track">
+                        <div
+                            class="uv-bar uv-other-bar"
+                            style="width: {{ [[oc, 0]|max, 100]|min }}%;">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="uv-tip">
+                <span class="uv-tip-icon">💡</span>
+                <p>
+                    For better results, upload a clear, well-lit image
+                    with the tomato leaf visible and in focus.
+                </p>
+            </div>
+
+            <a href="{{ url_for('index') }}" class="uv-button">
+                <span class="uv-button-icon">↻</span>
+                {{ t('try_another') }}
+            </a>
+
+            <p class="uv-footer">
+                LeafVision AI · Tomato Plant Health Assistant
+            </p>
+
+        </main>
+    </div>
+</div>
+
+{% endblock %}

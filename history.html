@@ -1,0 +1,352 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}{{ t('my_plant_health_history') }} | LeafVision AI{% endblock %}
+
+{% block content %}
+
+<div class="history-page">
+
+    <!-- HEADER -->
+    <section class="history-hero">
+        <div class="history-hero-content">
+            <span class="history-badge">
+                🌱 LEAFVISION AI
+            </span>
+
+            <h1>{{ t('my_plant_health_history') }}</h1>
+            <p>{{ t('history_intro') }}</p>
+        </div>
+
+        <div class="history-total-card">
+            <span>🔬</span>
+            <h2>{{ total_analyses|default(0) }}</h2>
+            <p>{{ t('total_analyses') }}</p>
+        </div>
+    </section>
+
+    <!-- QUICK STATS -->
+    <section class="history-stats">
+
+        <div class="stat-card">
+            <div class="stat-icon">🧠</div>
+            <div>
+                <h3>{{ total_analyses|default(0) }}</h3>
+                <p>{{ t('ai_analyses') }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🌿</div>
+            <div>
+                <h3>{{ t('plant') }}</h3>
+                <p>{{ t('plant_health_monitoring') }}</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">👨‍🌾</div>
+            <div>
+                <h3>{{ t('expert_advice') }}</h3>
+                <p>{{ t('expert_guidance_available') }}</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- HISTORY SECTION -->
+    <section class="history-section">
+
+        <div class="section-heading">
+            <div>
+                <span class="mini-label">
+                    📋 {{ t('analysis_records') }}
+                </span>
+
+                <h2>{{ t('your_previous_analyses') }}</h2>
+            </div>
+
+            <a href="{{ url_for('index') }}" class="new-analysis-btn">
+                ＋ {{ t('new_analysis') }}
+            </a>
+        </div>
+
+        {% if history and history|length > 0 %}
+
+        <!-- HISTORY TABLE -->
+        <div class="history-table-wrapper">
+            <table class="history-table">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{{ t('plant') }}</th>
+                        <th>{{ t('ai_result') }}</th>
+                        <th>{{ t('confidence') }}</th>
+                        <th>{{ t('date') }}</th>
+                        <th>{{ t('status') }}</th>
+                        <th>{{ t('action') }}</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in history %}
+                    <tr>
+
+                        <!-- NUMBER -->
+                        <td>
+                            <div class="analysis-number">
+                                {{ loop.index }}
+                            </div>
+                        </td>
+
+                        <!-- PLANT -->
+                        <td>
+                            <div class="plant-cell">
+                                <div class="plant-avatar">🍅</div>
+
+                                <div>
+                                    <strong>{{ t('tomato_plant') }}</strong>
+
+                                    <span>
+                                        🌿 {{ t('plant_part') }}:
+                                        {% set part = item.plant_part|default('All', true)|lower %}
+
+                                        {% if part == 'leaf' %}
+                                            {{ t('leaf') }}
+                                        {% elif part == 'stem' %}
+                                            {{ t('stem') }}
+                                        {% elif part == 'root' %}
+                                            {{ t('root') }}
+                                        {% elif part == 'fruit' %}
+                                            {{ t('fruit') }}
+                                        {% elif part == 'all' %}
+                                            {{ t('plant_part_all') }}
+                                        {% else %}
+                                            {{ item.plant_part|default('All', true) }}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- AI RESULT -->
+                        <td>
+                            <div class="result-cell">
+
+                                {% set disease = item.disease|default(item.result|default('Unknown', true), true) %}
+                                {% set disease_key = disease|lower|replace(' ', '_')|replace('-', '_') %}
+
+                                <strong>
+                                    {% if disease_key in [
+                                        'healthy',
+                                        'healthy_tomato'
+                                    ] %}
+                                        {{ t('healthy') }}
+
+                                    {% elif disease_key in [
+                                        'target_spot'
+                                    ] %}
+                                        {{ t('target_spot') }}
+
+                                    {% elif disease_key in [
+                                        'early_blight'
+                                    ] %}
+                                        {{ t('early_blight') }}
+
+                                    {% elif disease_key in [
+                                        'late_blight'
+                                    ] %}
+                                        {{ t('late_blight') }}
+
+                                    {% elif disease_key in [
+                                        'tomato_yellow_leaf_curl_virus',
+                                        'tomato_yellow_leaf_curl'
+                                    ] %}
+                                        {{ t('tomato_yellow_leaf_curl_virus') }}
+
+                                    {% elif disease_key in [
+                                        'tomato_mosaic_virus'
+                                    ] %}
+                                        {{ t('tomato_mosaic_virus') }}
+
+                                    {% elif disease_key in [
+                                        'bacterial_spot'
+                                    ] %}
+                                        {{ t('bacterial_spot') }}
+
+                                    {% elif disease_key in [
+                                        'septoria_leaf_spot'
+                                    ] %}
+                                        {{ t('septoria_leaf_spot') }}
+
+                                    {% elif disease_key in [
+                                        'leaf_mold'
+                                    ] %}
+                                        {{ t('leaf_mold') }}
+
+                                    {% elif disease_key in [
+                                        'spider_mites',
+                                        'two_spotted_spider_mite'
+                                    ] %}
+                                        {{ t('spider_mites') }}
+
+                                    {% elif disease_key in [
+                                        'powdery_mildew'
+                                    ] %}
+                                        {{ t('powdery_mildew') }}
+
+                                    {% elif disease_key in [
+                                        'tomato_spotted_wilt_virus'
+                                    ] %}
+                                        {{ t('tomato_spotted_wilt_virus') }}
+
+                                    {% elif disease_key in [
+                                        'mosaic_virus'
+                                    ] %}
+                                        {{ t('mosaic_virus') }}
+
+                                    {% elif disease_key in [
+                                        'leaf_curl'
+                                    ] %}
+                                        {{ t('leaf_curl') }}
+
+                                    {% else %}
+                                        {{ disease|replace('_', ' ') }}
+                                    {% endif %}
+                                </strong>
+
+                                {% if disease_key in [
+                                    'healthy',
+                                    'healthy_tomato'
+                                ] %}
+                                    <span class="result healthy">
+                                        ● {{ t('healthy') }}
+                                    </span>
+                                {% elif disease_key in [
+                                    'target_spot',
+                                    'early_blight',
+                                    'late_blight',
+                                    'tomato_yellow_leaf_curl_virus',
+                                    'tomato_yellow_leaf_curl',
+                                    'tomato_mosaic_virus',
+                                    'bacterial_spot',
+                                    'septoria_leaf_spot',
+                                    'leaf_mold',
+                                    'spider_mites',
+                                    'two_spotted_spider_mite',
+                                    'powdery_mildew',
+                                    'tomato_spotted_wilt_virus',
+                                    'mosaic_virus',
+                                    'leaf_curl'
+                                ] %}
+                                    <span class="result warning">
+                                        ● {{ t('detected') }}
+                                    </span>
+                                {% else %}
+                                    <span class="result neutral">
+                                        ● {{ t('analysis') }}
+                                    </span>
+                                {% endif %}
+
+                            </div>
+                        </td>
+
+                        <!-- CONFIDENCE -->
+                        <td>
+                            {% set confidence_value = item.confidence|default(0, true)|float %}
+                            {% set confidence_value = [[confidence_value, 0]|max, 100]|min %}
+
+                            <div class="confidence">
+                                <div class="confidence-top">
+                                    <strong>
+                                        {{ "%.2f"|format(confidence_value) }}%
+                                    </strong>
+                                </div>
+
+                                <div class="confidence-bar">
+                                    <div
+                                        class="confidence-fill"
+                                        style="width: {{ confidence_value }}%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- DATE -->
+                        <td>
+                            <div class="date-cell">
+                                <strong>
+                                    {{ item.created_at|default(item.date|default('-', true), true) }}
+                                </strong>
+
+                                <span>
+                                    🕒 {{ t('analysis_submitted') }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+                            {% if item.advice|default(false) or item.response_count|default(0)|int > 0 %}
+                                <span class="status completed">
+                                    ✓ {{ t('expert_advice_received') }}
+                                </span>
+                            {% else %}
+                                <span class="status waiting">
+                                    ⏳ {{ t('waiting_for_advice') }}
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- ACTION -->
+                        <td>
+                            <a
+                                href="{{ url_for('result', analysis_id=item.id) }}"
+                                class="view-btn">
+                                {{ t('view_analysis') }} →
+                            </a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="history-timeline">
+            <div class="timeline-title">
+                <span>🌱</span>
+                {{ t('plant_health_journey') }}
+            </div>
+
+            <p>{{ t('history_timeline_description') }}</p>
+
+            <div class="timeline-line"></div>
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY STATE -->
+        <div class="empty-history">
+            <div class="empty-icon">🌱</div>
+
+            <h2>{{ t('no_analyses_yet') }}</h2>
+
+            <p>{{ t('history_empty_description') }}</p>
+
+            <a href="{{ url_for('index') }}" class="new-analysis-btn">
+                🔍 {{ t('start_first_analysis') }}
+            </a>
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}
+```
