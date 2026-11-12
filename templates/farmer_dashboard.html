@@ -1,0 +1,2133 @@
+{% extends "base.html" %}
+
+{% block title %}
+Farmer Expert Dashboard | LeafVision AI
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   FARMER EXPERT DASHBOARD
+========================================================= */
+
+.farmer-dashboard {
+    min-height: calc(100vh - 120px);
+    padding: 35px 5%;
+    background:
+        radial-gradient(circle at 5% 10%, rgba(0, 180, 130, .10), transparent 28%),
+        radial-gradient(circle at 95% 20%, rgba(120, 220, 170, .12), transparent 30%),
+        linear-gradient(135deg, #eefcf7, #dcf6ee);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.expert-hero {
+    max-width: 1150px;
+    margin: 0 auto 25px;
+
+    padding: 35px 40px;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.95),
+            rgba(228,250,242,.90)
+        );
+
+    border: 1px solid rgba(0, 150, 110, .12);
+
+    box-shadow:
+        0 20px 50px rgba(0, 90, 70, .10);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.hero-left {
+    flex: 1;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 8px 15px;
+
+    border-radius: 30px;
+
+    background: #e1f8ef;
+
+    color: #008568;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: .5px;
+}
+
+.expert-hero h1 {
+    margin: 14px 0 8px;
+
+    color: #005448;
+
+    font-size: 36px;
+
+    font-weight: 850;
+}
+
+.expert-hero p {
+    margin: 0;
+
+    color: #587d74;
+
+    font-size: 15px;
+}
+
+.hero-icon {
+    width: 80px;
+    height: 80px;
+
+    border-radius: 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 40px;
+
+    background: white;
+
+    box-shadow:
+        0 15px 30px rgba(0,100,80,.12);
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.expert-stats {
+    max-width: 1150px;
+
+    margin: 0 auto 25px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.expert-stat-card {
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    border: 1px solid #dcefe9;
+
+    box-shadow:
+        0 10px 30px rgba(0,90,70,.07);
+
+    transition: .25s;
+}
+
+.expert-stat-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 18px 35px rgba(0,90,70,.12);
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 16px;
+
+    background: #e8f9f3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+}
+
+.expert-stat-card span {
+    display: block;
+
+    font-size: 12px;
+
+    color: #718c85;
+
+    margin-bottom: 4px;
+}
+
+.expert-stat-card strong {
+    font-size: 25px;
+
+    color: #006451;
+}
+
+
+/* =========================================================
+   CASE SECTION
+========================================================= */
+
+.cases-section {
+    max-width: 1150px;
+
+    margin: 0 auto;
+
+    background: white;
+
+    border-radius: 28px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 20px 55px rgba(0,80,60,.09);
+
+    border: 1px solid #dcefe9;
+}
+
+.section-heading {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.section-label {
+    display: inline-block;
+
+    color: #008568;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: .8px;
+}
+
+.section-heading h2 {
+    margin: 5px 0;
+
+    color: #005448;
+
+    font-size: 25px;
+}
+
+.section-heading p {
+    margin: 0;
+
+    color: #78928b;
+
+    font-size: 13px;
+}
+
+.case-count {
+    min-width: 85px;
+
+    height: 85px;
+
+    border-radius: 22px;
+
+    background: #e6f9f2;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #008568;
+}
+
+.case-count strong {
+    font-size: 27px;
+}
+
+.case-count small {
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.cases-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    border: 1px solid #e4f0ed;
+
+    border-radius: 18px;
+}
+
+.cases-table {
+    width: 100%;
+
+    min-width: 1000px;
+
+    border-collapse: collapse;
+}
+
+.cases-table thead {
+    background: #f2faf7;
+}
+
+.cases-table th {
+    padding: 16px;
+
+    text-align: left;
+
+    font-size: 11px;
+
+    color: #4d7067;
+
+    text-transform: uppercase;
+
+    letter-spacing: .5px;
+
+    white-space: nowrap;
+}
+
+.cases-table td {
+    padding: 17px 16px;
+
+    border-top: 1px solid #edf4f1;
+
+    vertical-align: middle;
+}
+
+.cases-table tbody tr {
+    transition: .2s;
+}
+
+.cases-table tbody tr:hover {
+    background: #f8fdfb;
+}
+
+
+/* CASE */
+
+.case-id {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.case-leaf {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 12px;
+
+    background: #e5f8f0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.case-id strong {
+    display: block;
+
+    color: #07594b;
+
+    font-size: 13px;
+}
+
+.case-id small {
+    color: #8aa099;
+
+    font-size: 10px;
+}
+
+
+/* FARMER */
+
+.farmer-cell {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.farmer-avatar {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #e9f8f3;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.farmer-cell strong {
+    display: block;
+
+    color: #07594b;
+
+    font-size: 13px;
+}
+
+.farmer-cell small {
+    display: block;
+
+    color: #8aa099;
+
+    font-size: 10px;
+
+    margin-top: 3px;
+}
+
+
+/* PLANT */
+
+.plant-part {
+    display: inline-block;
+
+    padding: 7px 10px;
+
+    border-radius: 20px;
+
+    background: #edf9f5;
+
+    color: #19725f;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+
+/* DATE */
+
+.date-cell {
+    color: #617b74;
+
+    font-size: 12px;
+
+    white-space: nowrap;
+}
+
+
+/* CONDITION */
+
+.condition-cell strong {
+    display: block;
+
+    color: #0a574a;
+
+    font-size: 13px;
+}
+
+.condition-cell small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #8ba39d;
+
+    font-size: 10px;
+}
+
+
+/* CONFIDENCE */
+
+.confidence {
+    min-width: 100px;
+}
+
+.confidence-number {
+    color: #008568;
+
+    font-weight: 800;
+
+    font-size: 12px;
+
+    margin-bottom: 6px;
+}
+
+.confidence-bar {
+    width: 100px;
+
+    height: 6px;
+
+    background: #e4efeb;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.confidence-bar span {
+    display: block;
+
+    height: 100%;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #12a978,
+            #00c58c
+        );
+}
+
+
+/* STATUS */
+
+.status-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.status-complete {
+    background: #e1f8ed;
+
+    color: #00805f;
+}
+
+.status-pending {
+    background: #fff5d9;
+
+    color: #a56b00;
+}
+
+
+/* ACTION */
+
+.review-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 9px 14px;
+
+    border-radius: 11px;
+
+    background: #006f59;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    transition: .2s;
+
+    white-space: nowrap;
+}
+
+.review-btn:hover {
+    background: #005443;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-cases {
+    padding: 70px 20px;
+
+    text-align: center;
+
+    border: 2px dashed #d7ebe5;
+
+    border-radius: 20px;
+
+    background: #f8fcfa;
+}
+
+.empty-icon {
+    width: 75px;
+    height: 75px;
+
+    margin: auto;
+
+    border-radius: 22px;
+
+    background: #e7f8f1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 35px;
+}
+
+.empty-cases h3 {
+    color: #07594b;
+
+    margin: 15px 0 7px;
+}
+
+.empty-cases p {
+    color: #819790;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   DETAILED CASES
+========================================================= */
+
+.case-details-section {
+    max-width: 1150px;
+
+    margin: 30px auto 0;
+}
+
+.detail-heading {
+    margin-bottom: 18px;
+}
+
+.detail-heading span {
+    color: #008568;
+
+    font-size: 11px;
+
+    font-weight: 900;
+}
+
+.detail-heading h2 {
+    margin: 5px 0;
+
+    color: #005448;
+}
+
+
+/* CASE CARD */
+
+.farmer-case-card {
+    margin-bottom: 25px;
+
+    background: white;
+
+    border-radius: 25px;
+
+    overflow: hidden;
+
+    border: 1px solid #dcefe9;
+
+    box-shadow:
+        0 15px 45px rgba(0,80,60,.08);
+}
+
+.case-card-header {
+    padding: 23px 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f1fcf8,
+            #e5f8f1
+        );
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+.case-number {
+    color: #008568;
+
+    font-size: 11px;
+
+    font-weight: 900;
+}
+
+.case-card-header h3 {
+    margin: 5px 0 0;
+
+    color: #07594b;
+}
+
+
+/* INFORMATION GRID */
+
+.case-info-grid {
+    padding: 25px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+}
+
+.info-panel {
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background: #f8fcfa;
+
+    border: 1px solid #e7f1ee;
+}
+
+.panel-title {
+    color: #07594b;
+
+    font-weight: 850;
+
+    font-size: 13px;
+
+    margin-bottom: 16px;
+}
+
+.info-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid #e7f0ed;
+
+    font-size: 12px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row span {
+    color: #7c948d;
+}
+
+.info-row strong {
+    color: #07594b;
+
+    text-align: right;
+}
+
+
+/* IMAGE */
+
+.image-panel {
+    min-height: 220px;
+}
+
+.case-plant-image {
+    width: 100%;
+
+    height: 220px;
+
+    object-fit: contain;
+
+    border-radius: 14px;
+
+    background: #eef8f5;
+}
+
+.image-placeholder {
+    height: 220px;
+
+    border-radius: 14px;
+
+    background: #eef8f5;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    color: #87a39a;
+
+    font-size: 12px;
+}
+
+.image-placeholder:first-letter {
+    font-size: 35px;
+}
+
+
+/* AI PANEL */
+
+.ai-panel {
+    background:
+        linear-gradient(
+            145deg,
+            #f0fbf7,
+            #f9fdfb
+        );
+}
+
+.ai-condition {
+    padding: 16px;
+
+    border-radius: 15px;
+
+    background: white;
+
+    border-left: 4px solid #00a878;
+
+    margin-bottom: 18px;
+}
+
+.ai-condition span {
+    display: block;
+
+    font-size: 9px;
+
+    color: #819790;
+
+    font-weight: 800;
+
+    letter-spacing: .6px;
+
+    margin-bottom: 5px;
+}
+
+.ai-condition strong {
+    color: #e44b4b;
+
+    font-size: 18px;
+}
+
+.ai-confidence {
+    display: flex;
+
+    justify-content: space-between;
+
+    font-size: 12px;
+
+    color: #718b84;
+}
+
+.ai-confidence strong {
+    color: #008568;
+}
+
+.confidence-large {
+    height: 8px;
+
+    margin-top: 10px;
+
+    background: #dfede8;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+}
+
+.confidence-large span {
+    display: block;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #00a878,
+            #00cc91
+        );
+
+    border-radius: 10px;
+}
+
+.ai-message {
+    margin-top: 15px;
+
+    padding: 10px;
+
+    border-radius: 12px;
+
+    background: #eaf8f3;
+
+    color: #5d7c73;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   OBSERVATION
+========================================================= */
+
+.observation-panel {
+    margin: 0 25px 20px;
+
+    padding: 23px;
+
+    border-radius: 18px;
+
+    background: #f8fcfa;
+
+    border: 1px solid #e7f1ee;
+}
+
+.observation-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+}
+
+.observation-grid > div {
+    padding: 15px;
+
+    background: white;
+
+    border-radius: 14px;
+
+    border: 1px solid #e9f1ef;
+}
+
+.observation-grid span {
+    display: block;
+
+    color: #80968f;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    margin-bottom: 7px;
+}
+
+.observation-grid p {
+    margin: 0;
+
+    color: #315e54;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   EXPERT ADVICE
+========================================================= */
+
+.expert-advice-panel {
+    margin: 0 25px 25px;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #effaf6,
+            #e3f7ef
+        );
+
+    border: 1px solid #cceee2;
+}
+
+.advice-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 20px;
+}
+
+.advice-header h3 {
+    margin: 5px 0;
+
+    color: #07594b;
+
+    font-size: 22px;
+}
+
+.advice-header p {
+    margin: 0;
+
+    color: #718b84;
+
+    font-size: 12px;
+}
+
+.expert-badge {
+    padding: 9px 14px;
+
+    border-radius: 20px;
+
+    background: white;
+
+    color: #008568;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+
+/* QUICK ADVICE */
+
+.quick-advice {
+    margin-top: 20px;
+}
+
+.quick-advice > span {
+    display: block;
+
+    color: #456f64;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    margin-bottom: 10px;
+}
+
+.advice-buttons {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+.advice-buttons button {
+    border: 1px solid #cde8de;
+
+    background: white;
+
+    color: #14725f;
+
+    padding: 9px 12px;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    font-size: 11px;
+
+    transition: .2s;
+}
+
+.advice-buttons button:hover {
+    background: #dff7ee;
+
+    transform: translateY(-2px);
+}
+
+
+/* FORM */
+
+.advice-form {
+    margin-top: 18px;
+}
+
+.advice-form label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #07594b;
+
+    font-size: 12px;
+
+    font-weight: 850;
+}
+
+.advice-form textarea {
+    width: 100%;
+
+    min-height: 150px;
+
+    box-sizing: border-box;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    border: 1px solid #cde6dd;
+
+    background: white;
+
+    resize: vertical;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    color: #315e54;
+}
+
+.advice-form textarea:focus {
+    outline: none;
+
+    border-color: #00a878;
+
+    box-shadow:
+        0 0 0 3px rgba(0,168,120,.10);
+}
+
+.advice-footer {
+    margin-top: 12px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+.advice-footer span {
+    color: #78938b;
+
+    font-size: 10px;
+}
+
+.send-advice-btn {
+    border: none;
+
+    padding: 12px 19px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #008d6b,
+            #006d57
+        );
+
+    color: white;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.send-advice-btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(0,110,85,.20);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:950px) {
+
+    .expert-stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .case-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .observation-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+}
+
+@media(max-width:650px) {
+
+    .farmer-dashboard {
+        padding: 20px 12px;
+    }
+
+    .expert-hero {
+        padding: 25px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .expert-hero h1 {
+        font-size: 28px;
+    }
+
+    .expert-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .cases-section {
+        padding: 18px;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .case-card-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .observation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .advice-footer {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .send-advice-btn {
+        width: 100%;
+    }
+
+}
+
+</style>
+
+
+<div class="farmer-dashboard">
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="expert-hero">
+
+        <div class="hero-left">
+
+            <div class="hero-badge">
+                🌱 FARMER EXPERT PANEL
+            </div>
+
+            <h1>
+                Plant Health Review Center
+            </h1>
+
+            <p>
+                Review farmer-submitted plant cases, understand AI results,
+                and provide practical agricultural guidance.
+            </p>
+
+        </div>
+
+        <div class="hero-icon">
+            🌿
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="expert-stats">
+
+        <div class="expert-stat-card">
+
+            <div class="stat-icon">
+                📊
+            </div>
+
+            <div>
+                <span>Total Analyses</span>
+
+                <strong>
+                    {{ total_analyses or 0 }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="expert-stat-card">
+
+            <div class="stat-icon">
+                ✅
+            </div>
+
+            <div>
+                <span>Advice Given</span>
+
+                <strong>
+                    {{ advice_given or 0 }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="expert-stat-card waiting">
+
+            <div class="stat-icon">
+                ⏳
+            </div>
+
+            <div>
+                <span>Waiting for Advice</span>
+
+                <strong>
+                    {{ waiting_for_advice or 0 }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="expert-stat-card">
+
+            <div class="stat-icon">
+                👨‍🌾
+            </div>
+
+            <div>
+                <span>Farmer Cases</span>
+
+                <strong>
+                    {{ farmer_cases|length }}
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CASES
+    ====================================================== -->
+
+    <section class="cases-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-label">
+                    🌱 FARMER CASES
+                </span>
+
+                <h2>
+                    User Plant Analyses
+                </h2>
+
+                <p>
+                    Select a case to review the submitted plant,
+                    AI analysis and provide expert guidance.
+                </p>
+
+            </div>
+
+
+            <div class="case-count">
+
+                <strong>
+                    {{ farmer_cases|length }}
+                </strong>
+
+                <small>
+                    Cases
+                </small>
+
+            </div>
+
+        </div>
+
+
+        {% if farmer_cases %}
+
+        <div class="cases-table-wrapper">
+
+            <table class="cases-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Case</th>
+
+                        <th>Farmer</th>
+
+                        <th>Plant Part</th>
+
+                        <th>Submitted</th>
+
+                        <th>AI Condition</th>
+
+                        <th>Confidence</th>
+
+                        <th>Status</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for case in farmer_cases %}
+
+                    <tr>
+
+
+                        <!-- CASE -->
+
+                        <td>
+
+                            <div class="case-id">
+
+                                <span class="case-leaf">
+                                    🌿
+                                </span>
+
+                                <div>
+
+                                    <strong>
+                                        CASE #{{ case.id }}
+                                    </strong>
+
+                                    <small>
+                                        Plant Health Analysis
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- FARMER -->
+
+                        <td>
+
+                            <div class="farmer-cell">
+
+                                <div class="farmer-avatar">
+                                    👨‍🌾
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ case.user_name or case.name or "Farmer" }}
+                                    </strong>
+
+                                    <small>
+                                        {{ case.email or "Email unavailable" }}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- PLANT PART -->
+
+                        <td>
+
+                            <span class="plant-part">
+
+                                🌱
+
+                                {{ case.plant_part or "Complete Plant" }}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            <div class="date-cell">
+
+                                🕒
+
+                                {{ case.created_at or case.date or "Recently" }}
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- AI CONDITION -->
+
+                        <td>
+
+                            <div class="condition-cell">
+
+                                <strong>
+
+                                    {{ case.condition or case.prediction or case.result or "Analysis Available" }}
+
+                                </strong>
+
+                                <small>
+                                    🤖 AI Detection
+                                </small>
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- CONFIDENCE -->
+
+                        <td>
+
+                            <div class="confidence">
+
+                                <div class="confidence-number">
+
+                                    {{ case.confidence or "—" }}%
+
+                                </div>
+
+                                <div class="confidence-bar">
+
+                                    <span
+                                        style="width: {{ case.confidence or 0 }}%;">
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if case.expert_advice or case.advice %}
+
+                                <span class="status-badge status-complete">
+                                    ✓ Advice Given
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-badge status-pending">
+                                    ⏳ Needs Advice
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+
+                        <!-- ACTION -->
+
+                        <td>
+
+                            <a
+                                href="{{ url_for('farmer_case', analysis_id=case.id) }}"
+                                class="review-btn">
+
+                                {% if case.expert_advice or case.advice %}
+                                    View Answer
+                                {% else %}
+                                    Review Case
+                                {% endif %}
+
+                                →
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        {% else %}
+
+        <div class="empty-cases">
+
+            <div class="empty-icon">
+                🌱
+            </div>
+
+            <h3>
+                No Farmer Cases Yet
+            </h3>
+
+            <p>
+                New plant analyses submitted by farmers
+                will automatically appear here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DETAILED CASES
+    ====================================================== -->
+
+    {% if farmer_cases %}
+
+    <section class="case-details-section">
+
+        <div class="detail-heading">
+
+            <span>
+                🔎 CASE REVIEW
+            </span>
+
+            <h2>
+                Farmer Submitted Cases
+            </h2>
+
+        </div>
+
+
+        {% for case in farmer_cases %}
+
+        <article
+            class="farmer-case-card"
+            id="case-{{ case.id }}"
+        >
+
+
+            <!-- CASE HEADER -->
+
+            <div class="case-card-header">
+
+                <div>
+
+                    <span class="case-number">
+                        CASE #{{ case.id }}
+                    </span>
+
+                    <h3>
+                        🌿 Plant Health Analysis
+                    </h3>
+
+                </div>
+
+
+                <div>
+
+                    {% if case.expert_advice or case.advice %}
+
+                        <span class="status-badge status-complete">
+                            ✓ Reviewed
+                        </span>
+
+                    {% else %}
+
+                        <span class="status-badge status-pending">
+                            ⏳ Needs Expert Advice
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- INFORMATION GRID -->
+
+            <div class="case-info-grid">
+
+
+                <!-- FARMER -->
+
+                <div class="info-panel">
+
+                    <div class="panel-title">
+                        👨‍🌾 Farmer Information
+                    </div>
+
+                    <div class="info-row">
+
+                        <span>Name</span>
+
+                        <strong>
+                            {{ case.user_name or case.name or "Farmer" }}
+                        </strong>
+
+                    </div>
+
+                    <div class="info-row">
+
+                        <span>Email</span>
+
+                        <strong>
+                            {{ case.email or "Not available" }}
+                        </strong>
+
+                    </div>
+
+                    <div class="info-row">
+
+                        <span>Plant Part</span>
+
+                        <strong>
+                            🌱 {{ case.plant_part or "Complete Plant" }}
+                        </strong>
+
+                    </div>
+
+                    <div class="info-row">
+
+                        <span>Submitted</span>
+
+                        <strong>
+                            {{ case.created_at or case.date or "Recently" }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- IMAGE -->
+
+                <div class="info-panel image-panel">
+
+                    <div class="panel-title">
+                        📷 Submitted Plant
+                    </div>
+
+                    {% if case.image_path or case.image %}
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename=case.image_path or case.image
+                            ) }}"
+                            class="case-plant-image"
+                            alt="Submitted plant image"
+                        >
+
+                    {% else %}
+
+                        <div class="image-placeholder">
+
+                            🌿
+
+                            <span>
+                                Image unavailable
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- AI RESULT -->
+
+                <div class="info-panel ai-panel">
+
+                    <div class="panel-title">
+                        🤖 AI Health Analysis
+                    </div>
+
+                    <div class="ai-condition">
+
+                        <span>
+                            DETECTED CONDITION
+                        </span>
+
+                        <strong>
+                            {{ case.condition or case.prediction or case.result or "Analysis Available" }}
+                        </strong>
+
+                    </div>
+
+                    <div class="ai-confidence">
+
+                        <span>
+                            AI Confidence
+                        </span>
+
+                        <strong>
+                            {{ case.confidence or "—" }}%
+                        </strong>
+
+                    </div>
+
+                    <div class="confidence-large">
+
+                        <span
+                            style="width: {{ case.confidence or 0 }}%;">
+                        </span>
+
+                    </div>
+
+                    <div class="ai-message">
+
+                        🧠
+                        AI-assisted prediction.
+                        Expert review is recommended.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- FARMER OBSERVATION -->
+
+            <div class="observation-panel">
+
+                <div class="panel-title">
+                    🔍 Farmer Observation
+                </div>
+
+
+                <div class="observation-grid">
+
+
+                    <div>
+
+                        <span>
+                            Symptoms
+                        </span>
+
+                        <p>
+                            {{ case.symptoms or "No symptoms reported." }}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Duration
+                        </span>
+
+                        <p>
+                            {{ case.duration or "Not specified" }}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Growth Stage
+                        </span>
+
+                        <p>
+                            {{ case.growth_stage or "Not specified" }}
+                        </p>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Environment
+                        </span>
+
+                        <p>
+                            {{ case.environment or "Not specified" }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- EXPERT ADVICE -->
+
+            <div class="expert-advice-panel">
+
+                <div class="advice-header">
+
+                    <div>
+
+                        <span class="section-label">
+                            🌾 EXPERT CONTRIBUTION
+                        </span>
+
+                        <h3>
+                            Farmer Suggestions
+                        </h3>
+
+                        <p>
+                            Provide practical guidance based on
+                            the farmer's plant condition.
+                        </p>
+
+                    </div>
+
+                    <div class="expert-badge">
+                        🧑‍🌾 Expert
+                    </div>
+
+                </div>
+
+
+                <!-- QUICK SUGGESTIONS -->
+
+                <div class="quick-advice">
+
+                    <span>
+                        ⚡ Quick Advice
+                    </span>
+
+                    <div class="advice-buttons">
+
+                        <button
+                            type="button"
+                            onclick="setAdvice('Water Management', {{ case.id }})"
+                        >
+                            💧 Water Management
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="setAdvice('Treatment', {{ case.id }})"
+                        >
+                            🌿 Treatment
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="setAdvice('Prevention', {{ case.id }})"
+                        >
+                            🛡 Prevention
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="setAdvice('Fertilizer', {{ case.id }})"
+                        >
+                            🌱 Fertilizer
+                        </button>
+
+                        <button
+                            type="button"
+                            onclick="setAdvice('General Advice', {{ case.id }})"
+                        >
+                            💡 General Advice
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ADVICE FORM -->
+
+                <form
+                    method="POST"
+                    action="{{ url_for('farmer_case', analysis_id=case.id) }}"
+                    class="advice-form"
+                >
+
+                    <label>
+                        💬 Your Recommendation
+                    </label>
+
+
+                    <textarea
+                        name="advice"
+                        id="adviceBox-{{ case.id }}"
+                        placeholder="Write practical farming advice for this farmer..."
+                        required
+                    >{{ case.expert_advice or case.advice or "" }}</textarea>
+
+
+                    <div class="advice-footer">
+
+                        <span>
+                            🔒 Your expert response will be securely
+                            shared with the farmer.
+                        </span>
+
+
+                        <button
+                            type="submit"
+                            class="send-advice-btn"
+                        >
+                            📤
+                            Send Advice →
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </section>
+
+    {% endif %}
+
+</div>
+
+
+
+<script>
+
+function setAdvice(type, caseId) {
+
+    const box =
+        document.getElementById("adviceBox-" + caseId);
+
+    if (!box) return;
+
+
+    const suggestions = {
+
+        "Water Management":
+            "Maintain proper irrigation and avoid overwatering. Check soil moisture regularly and ensure proper drainage around the plant.",
+
+        "Treatment":
+            "Inspect the affected plant parts carefully. Remove severely affected portions if required and follow an appropriate treatment recommended for the detected condition.",
+
+        "Prevention":
+            "Maintain good air circulation, avoid excessive moisture on leaves, remove infected plant material and regularly monitor the crop.",
+
+        "Fertilizer":
+            "Maintain balanced plant nutrition. Avoid excessive fertilizer application and use nutrients according to the crop growth stage and soil condition.",
+
+        "General Advice":
+            "Regularly monitor the plant, maintain proper irrigation and nutrition, and observe any changes in leaves, stems, fruits or overall plant growth."
+
+    };
+
+
+    box.value =
+        suggestions[type] || "";
+
+    box.focus();
+
+}
+
+</script>
+
+
+{% endblock %}
