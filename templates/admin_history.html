@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ t('admin_history') }}
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <h1>
+        📋 {{ t('all_history') }}
+    </h1>
+
+    <p>
+        Admin can see analysis records from all farmers.
+    </p>
+
+</section>
+
+
+<section class="card">
+
+{% if history %}
+
+<div class="table-container">
+
+<table>
+
+    <thead>
+
+        <tr>
+
+            <th>{{ t('date') }}</th>
+
+            <th>{{ t('farmer') }}</th>
+
+            <th>Email</th>
+
+            <th>{{ t('plant') }}</th>
+
+            <th>{{ t('result') }}</th>
+
+            <th>{{ t('confidence') }}</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for item in history %}
+
+        <tr>
+
+            <td>
+                {{ item.date }}
+            </td>
+
+            <td>
+                {{ item.get('user_name', 'Old Record') }}
+            </td>
+
+            <td>
+                {{ item.get('user_email', '-') }}
+            </td>
+
+            <td>
+                {{ item.plant }}
+            </td>
+
+            <td>
+                {{ item.disease }}
+            </td>
+
+            <td>
+                {{ item.confidence }}%
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% else %}
+
+<p>
+    {{ t('no_history') }}
+</p>
+
+{% endif %}
+
+</section>
+
+{% endblock %}
