@@ -1,0 +1,879 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | LeafVision AI{% endblock %}
+
+{% block content %}
+
+<div class="admin-page">
+
+    <!-- ================= HEADER ================= -->
+
+    <section class="admin-hero">
+
+        <div>
+            <span class="admin-badge">
+                👨‍💼 ADMINISTRATOR
+            </span>
+
+            <h1>
+                Admin Dashboard
+            </h1>
+
+            <p>
+                Monitor users, plant analyses and farmer responses
+                from one intelligent control center.
+            </p>
+        </div>
+
+        <div class="admin-live">
+            <span class="live-dot"></span>
+            System Active
+        </div>
+
+    </section>
+
+
+    <!-- ================= STAT CARDS ================= -->
+
+    <section class="admin-stats">
+
+        <div class="admin-stat-card users-card">
+
+            <div class="stat-top">
+                <div class="admin-stat-icon">
+                    👥
+                </div>
+
+                <span class="stat-label">
+                    USERS
+                </span>
+            </div>
+
+            <div class="stat-number">
+                {{ total_users }}
+            </div>
+
+            <div class="stat-description">
+                Registered users
+            </div>
+
+            <div class="stat-footer">
+                <span>● Active database</span>
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card farmer-card">
+
+            <div class="stat-top">
+                <div class="admin-stat-icon">
+                    👨‍🌾
+                </div>
+
+                <span class="stat-label">
+                    FARMERS
+                </span>
+            </div>
+
+            <div class="stat-number">
+                {{ total_farmers }}
+            </div>
+
+            <div class="stat-description">
+                Farmer experts
+            </div>
+
+            <div class="stat-footer">
+                <span>● Support team</span>
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card analysis-card">
+
+            <div class="stat-top">
+                <div class="admin-stat-icon">
+                    🧠
+                </div>
+
+                <span class="stat-label">
+                    ANALYSES
+                </span>
+            </div>
+
+            <div class="stat-number">
+                {{ total_analyses }}
+            </div>
+
+            <div class="stat-description">
+                AI plant predictions
+            </div>
+
+            <div class="stat-footer">
+                <span>● AI powered</span>
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-card response-card">
+
+            <div class="stat-top">
+                <div class="admin-stat-icon">
+                    💬
+                </div>
+
+                <span class="stat-label">
+                    RESPONSES
+                </span>
+            </div>
+
+            <div class="stat-number">
+                {{ total_responses }}
+            </div>
+
+            <div class="stat-description">
+                Farmer expert responses
+            </div>
+
+            <div class="stat-footer">
+                <span>● Expert guidance</span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <div class="admin-analysis-actions">
+
+    <form
+        action="{{ url_for('admin_delete_analysis', analysis_id=analysis.id) }}"
+        method="POST"
+        onsubmit="return confirm('Are you sure you want to delete this analysis? This action cannot be undone.');"
+    >
+
+        <button
+            type="submit"
+            class="admin-delete-btn"
+        >
+            🗑️ Delete Analysis
+        </button>
+
+    </form>
+
+</div>
+
+
+    <!-- ================= SYSTEM OVERVIEW ================= -->
+
+    <section class="admin-overview">
+
+        <div class="overview-left">
+
+            <span class="section-mini-label">
+                🌿 LEAFVISION AI
+            </span>
+
+            <h2>
+                Smart Agriculture Control Center
+            </h2>
+
+            <p>
+                Your system is continuously collecting plant
+                health analyses and connecting farmers with
+                AI-powered agricultural guidance.
+            </p>
+
+        </div>
+
+        <div class="overview-right">
+
+            <div class="overview-item">
+                <span class="overview-icon">🤖</span>
+                <div>
+                    <strong>AI Detection</strong>
+                    <small>Plant disease analysis</small>
+                </div>
+            </div>
+
+            <div class="overview-item">
+                <span class="overview-icon">👨‍🌾</span>
+                <div>
+                    <strong>Expert Support</strong>
+                    <small>Farmer recommendations</small>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= USERS ================= -->
+
+    <section class="admin-section">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-mini-label">
+                    👥 USER MANAGEMENT
+                </span>
+
+                <h2>
+                    All Users
+                </h2>
+
+                <p>
+                    Registered users and their account information
+                </p>
+            </div>
+
+            <div class="section-count">
+                {{ total_users }} Users
+            </div>
+
+        </div>
+
+
+        {% if users %}
+
+        <div class="admin-table-container">
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>User</th>
+
+                        <th>Email</th>
+
+                        <th>Role</th>
+
+                        <th>Created</th>
+
+                        <th>Status</th>
+
+                        <th>ACTION</th>
+
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for user in users %}
+
+                    <tr>
+
+                        <!-- ID -->
+
+                        <td>
+                            <span class="table-id">
+                                #{{ user.id }}
+                            </span>
+                        </td>
+
+
+                        <!-- USER -->
+
+                        <td>
+
+                            <div class="user-cell">
+
+                                <div class="user-avatar">
+                                    {% if user.role == "admin" %}
+                                        👨‍💼
+                                    {% elif user.role == "farmer" %}
+                                        👨‍🌾
+                                    {% else %}
+                                        👤
+                                    {% endif %}
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ user.name }}
+                                    </strong>
+
+                                    <small>
+                                        LeafVision member
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EMAIL -->
+
+                        <td>
+
+                            <span class="email-text">
+                                {{ user.email }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- ROLE -->
+
+                        <td>
+
+                            {% if user.role == "admin" %}
+
+                                <span class="role-badge admin">
+                                    👨‍💼 Admin
+                                </span>
+
+                            {% elif user.role == "farmer" %}
+
+                                <span class="role-badge farmer">
+                                    👨‍🌾 Farmer
+                                </span>
+
+                            {% else %}
+
+                                <span class="role-badge user">
+                                    👤 User
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CREATED -->
+
+                        <td>
+
+                            <div class="date-info">
+
+                                <strong>
+                                    {{ user.created_at }}
+                                </strong>
+
+                                <small>
+                                    Account created
+                                </small>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            <span class="status-badge active">
+                                ● Active
+                            </span>
+
+                        </td>
+                        
+                        <!-- ACTION -->
+                         
+                        <td class="user-action-cell">
+
+    {% if user.role == 'admin' %}
+
+        <span class="protected-user">
+            🔒 Protected
+        </span>
+
+    {% elif user.email == 'farmer@leafvision.ai' %}
+
+        <span class="protected-user">
+            🔒 Protected
+        </span>
+
+    {% else %}
+
+        <form
+            action="{{ url_for('admin_delete_user', user_id=user.id) }}"
+            method="POST"
+            onsubmit="return confirm(
+                'Are you sure you want to delete {{ user.name }}?\\n\\nAll analyses and related farmer responses belonging to this user will also be deleted.'
+            );"
+        >
+
+            <button
+                type="submit"
+                class="admin-user-delete-btn"
+            >
+                🗑️ Delete
+            </button>
+
+        </form>
+
+    {% endif %}
+
+</td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="admin-empty">
+            👥
+            <h3>No users yet</h3>
+            <p>No registered users are available.</p>
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ================= PLANT ANALYSES ================= -->
+
+    <section class="admin-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-mini-label">
+                    🧠 AI MONITORING
+                </span>
+
+                <h2>
+                    Plant Analyses
+                </h2>
+
+                <p>
+                    AI disease predictions submitted by users
+                </p>
+
+            </div>
+
+            <div class="section-count">
+                {{ total_analyses }} Analyses
+            </div>
+
+        </div>
+
+
+        {% if analyses %}
+
+        <div class="admin-table-container">
+
+            <table class="admin-table analysis-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>User</th>
+
+                        <th>Plant Part</th>
+
+                        <th>Disease</th>
+
+                        <th>Confidence</th>
+
+                        <th>Date</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for analysis in analyses %}
+
+                    <tr>
+
+                        <!-- ID -->
+
+                        <td>
+
+                            <span class="table-id">
+                                #{{ analysis.id }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- USER -->
+
+                        <td>
+
+                            <div class="analysis-user">
+
+                                <div class="mini-avatar">
+                                    🌱
+                                </div>
+
+                                <strong>
+                                    {{ analysis.user_name or "User" }}
+                                </strong>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- PLANT PART -->
+
+                        <td>
+
+                            <span class="plant-part">
+
+                                🌿
+
+                                {{ analysis.plant_part or "All" }}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- DISEASE -->
+
+                        <td>
+
+                            {% if analysis.disease == "Healthy" %}
+
+                                <span class="disease-badge healthy">
+                                    ✓ Healthy
+                                </span>
+
+                            {% elif analysis.disease %}
+
+                                <span class="disease-badge detected">
+                                    ⚠ {{ analysis.disease }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="disease-badge neutral">
+                                    Analysis
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- CONFIDENCE -->
+
+                        <td>
+
+                            <div class="confidence-box">
+
+                                <div class="confidence-header">
+
+                                    <strong>
+                                        {{ "%.2f"|format(analysis.confidence|float) }}%
+                                    </strong>
+
+                                </div>
+
+                                <div class="confidence-track">
+
+                                    <div
+                                        class="confidence-progress"
+                                        style="width: {{ analysis.confidence|float }}%;">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            <div class="date-info">
+
+                                <strong>
+                                    {{ analysis.created_at }}
+                                </strong>
+
+                                <small>
+                                    AI analysis
+                                </small>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            <span class="status-badge analyzed">
+                                ✓ Analyzed
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="admin-empty">
+
+            🧠
+
+            <h3>
+                No plant analyses yet
+            </h3>
+
+            <p>
+                AI analysis records will appear here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ================= FARMER RESPONSES ================= -->
+
+    <section class="admin-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-mini-label">
+                    👨‍🌾 EXPERT SUPPORT
+                </span>
+
+                <h2>
+                    Farmer Responses
+                </h2>
+
+                <p>
+                    Expert guidance provided for plant analyses
+                </p>
+
+            </div>
+
+            <div class="section-count">
+                {{ total_responses }} Responses
+            </div>
+
+        </div>
+
+
+        {% if responses %}
+
+        <div class="admin-table-container">
+
+            <table class="admin-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Farmer</th>
+
+                        <th>Analysis</th>
+
+                        <th>Response</th>
+
+                        <th>Date</th>
+
+                        <th>Status</th>
+                        
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for response in responses %}
+
+                    <tr>
+
+                        <td>
+
+                            <span class="table-id">
+                                #{{ response.id }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="user-cell">
+
+                                <div class="user-avatar farmer-avatar">
+                                    👨‍🌾
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ response.farmer_name or "Farmer Expert" }}
+                                    </strong>
+
+                                    <small>
+                                        Agricultural expert
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="analysis-reference">
+
+                                🔬
+
+                                #{{ response.analysis_id }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="response-preview">
+
+                                {{ response.advice or response.response or "Expert response available" }}
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="date-info">
+
+                                <strong>
+                                    {{ response.created_at }}
+                                </strong>
+
+                                <small>
+                                    Expert response
+                                </small>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="status-badge completed">
+                                ✓ Completed
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="admin-empty">
+
+            <div class="empty-big-icon">
+                👨‍🌾
+            </div>
+
+            <h3>
+                No farmer responses yet
+            </h3>
+
+            <p>
+                When farmer experts respond to plant analyses,
+                their guidance will appear here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ================= FOOTER MESSAGE ================= -->
+
+    <section class="admin-bottom-card">
+
+        <div class="bottom-icon">
+            🌿
+        </div>
+
+        <div>
+
+            <h3>
+                LeafVision AI is monitoring your agriculture ecosystem
+            </h3>
+
+            <p>
+                AI detection → Plant analysis → Expert guidance
+                → Better farming decisions
+            </p>
+
+        </div>
+
+        <div class="bottom-status">
+            <span></span>
+            System Online
+        </div>
+
+    </section>
+
+
+</div>
+
+{% endblock %}
