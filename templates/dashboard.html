@@ -1,0 +1,620 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+    {% if current_role == 'admin' %}
+        LeafVision AI | Admin Dashboard
+    {% elif current_role == 'farmer' %}
+        LeafVision AI | Farmer Dashboard
+    {% else %}
+        LeafVision AI | Dashboard
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .lv-dashboard {
+        max-width: 1400px;
+        margin: auto;
+        padding: 28px 22px 45px;
+        color: #164e3c;
+    }
+
+    .lv-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 35px;
+        border-radius: 24px;
+        background: linear-gradient(120deg, #064e3b, #047857, #10b981);
+        color: white;
+        box-shadow: 0 15px 35px rgba(4, 120, 87, .16);
+    }
+
+    .lv-hero::after {
+        content: "🌿";
+        position: absolute;
+        right: 35px;
+        top: 12px;
+        font-size: 100px;
+        opacity: .17;
+    }
+
+    .lv-badge {
+        display: inline-block;
+        padding: 8px 13px;
+        border: 1px solid rgba(255,255,255,.25);
+        border-radius: 30px;
+        background: rgba(255,255,255,.12);
+        color: #ecfdf5;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+
+    .lv-hero h1 {
+        position: relative;
+        z-index: 1;
+        margin: 17px 0 9px;
+        color: white;
+        font-size: clamp(27px, 4vw, 39px);
+    }
+
+    .lv-hero p {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        color: #d1fae5;
+        line-height: 1.7;
+    }
+
+    .lv-section-heading {
+        margin: 30px 0 17px;
+    }
+
+    .lv-section-heading h2 {
+        margin: 0;
+        color: #064e3b;
+        font-size: 22px;
+    }
+
+    .lv-section-heading p {
+        margin: 7px 0 0;
+        color: #71877d;
+        font-size: 13px;
+    }
+
+    .lv-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .lv-stat {
+        padding: 23px;
+        border: 1px solid #dceee5;
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 7px 22px rgba(15, 80, 60, .045);
+        transition: transform .2s, box-shadow .2s;
+    }
+
+    .lv-stat:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 13px 28px rgba(15, 80, 60, .10);
+    }
+
+    .lv-stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .lv-stat-icon {
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 15px;
+        background: #e7f8ef;
+        font-size: 24px;
+    }
+
+    .lv-stat-number {
+        display: block;
+        margin-top: 21px;
+        color: #064e3b;
+        font-size: 36px;
+        font-weight: 850;
+        overflow-wrap: anywhere;
+    }
+
+    .lv-stat-label {
+        display: block;
+        margin-top: 7px;
+        color: #6b8277;
+        font-size: 13px;
+    }
+
+    .lv-panel {
+        margin-top: 25px;
+        overflow: hidden;
+        border: 1px solid #dceee5;
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 7px 22px rgba(15, 80, 60, .045);
+    }
+
+    .lv-panel-header {
+        padding: 22px 24px;
+        border-bottom: 1px solid #e7f2ec;
+    }
+
+    .lv-panel-header h2 {
+        margin: 0;
+        color: #064e3b;
+        font-size: 19px;
+    }
+
+    .lv-panel-header p {
+        margin: 6px 0 0;
+        color: #7a9086;
+        font-size: 12px;
+    }
+
+    .lv-table-wrap {
+        overflow-x: auto;
+    }
+
+    .lv-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    .lv-table th {
+        padding: 15px 18px;
+        background: #f3faf6;
+        color: #688077;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        white-space: nowrap;
+    }
+
+    .lv-table td {
+        padding: 16px 18px;
+        border-bottom: 1px solid #edf4f0;
+        vertical-align: middle;
+    }
+
+    .lv-table tbody tr:hover {
+        background: #f8fcfa;
+    }
+
+    .lv-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .lv-disease {
+        display: inline-block;
+        padding: 7px 10px;
+        border-radius: 9px;
+        background: #fff4e5;
+        color: #995b08;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .lv-confidence {
+        color: #047857;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .lv-view {
+        display: inline-block;
+        padding: 9px 12px;
+        border-radius: 9px;
+        background: #047857;
+        color: white !important;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .lv-view:hover {
+        background: #065f46;
+    }
+
+    .lv-empty {
+        padding: 40px 20px;
+        text-align: center;
+        color: #71877d;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .lv-empty-icon {
+        margin-bottom: 12px;
+        font-size: 40px;
+    }
+
+    .lv-empty strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #164e3c;
+        font-size: 16px;
+    }
+
+    .lv-bottom {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 18px;
+        margin-top: 23px;
+    }
+
+    .lv-info {
+        padding: 22px;
+        border: 1px solid #dceee5;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #effcf5, #ffffff);
+    }
+
+    .lv-info h3 {
+        margin: 0 0 9px;
+        color: #047857;
+        font-size: 16px;
+    }
+
+    .lv-info p {
+        margin: 0;
+        color: #617a6e;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .lv-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 17px;
+    }
+
+    .lv-action {
+        display: inline-block;
+        padding: 11px 15px;
+        border: 1px solid #b7e5cf;
+        border-radius: 11px;
+        background: white;
+        color: #047857 !important;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 750;
+    }
+
+    .lv-action.primary {
+        background: #047857;
+        color: white !important;
+        border-color: #047857;
+    }
+
+    .lv-action:hover {
+        opacity: .86;
+    }
+
+    @media (max-width: 850px) {
+        .lv-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .lv-bottom {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 550px) {
+        .lv-dashboard {
+            padding: 16px 11px 30px;
+        }
+
+        .lv-hero {
+            padding: 23px;
+        }
+
+        .lv-hero::after {
+            right: 10px;
+            font-size: 65px;
+        }
+
+        .lv-stat {
+            padding: 18px;
+        }
+
+        .lv-table th,
+        .lv-table td {
+            padding: 12px;
+        }
+    }
+</style>
+
+<div class="lv-dashboard">
+
+    <!-- WELCOME BANNER -->
+    <section class="lv-hero">
+
+        <div class="lv-badge">
+            {% if current_role == 'admin' %}
+                🛡️ ADMINISTRATOR CONTROL CENTER
+            {% elif current_role == 'farmer' %}
+                👨‍🌾 FARMER DASHBOARD
+            {% else %}
+                🌱 LEAFVISION AI DASHBOARD
+            {% endif %}
+        </div>
+
+        <h1>
+            {% if current_role == 'admin' %}
+                🌿 Admin Dashboard
+            {% elif current_role == 'farmer' %}
+                🌾 Farmer Dashboard
+            {% else %}
+                🌱 My Dashboard
+            {% endif %}
+        </h1>
+
+        <p>
+            Welcome,
+            {% if current_user %}
+                {{ current_user.name }}
+            {% else %}
+                LeafVision AI User
+            {% endif %}!
+            <br>
+            {% if current_role == 'admin' %}
+                Manage platform activity, users, plant analyses, and expert responses.
+            {% elif current_role == 'farmer' %}
+                Review plant analyses and provide useful agricultural guidance.
+            {% else %}
+                Monitor your plant health analysis results in one place.
+            {% endif %}
+        </p>
+
+    </section>
+
+    <!-- STATISTICS -->
+    <div class="lv-section-heading">
+        <h2>📊 Platform Overview</h2>
+        <p>Important statistics at a glance.</p>
+    </div>
+
+    <section class="lv-stats">
+
+        <article class="lv-stat">
+            <div class="lv-stat-top">
+                <div class="lv-stat-icon">🔬</div>
+            </div>
+
+            <strong class="lv-stat-number">
+                {% if total_analyses is defined %}
+                    {{ total_analyses }}
+                {% elif total is defined %}
+                    {{ total }}
+                {% else %}
+                    {{ history|default([])|length }}
+                {% endif %}
+            </strong>
+
+            <span class="lv-stat-label">
+                Total Plant Analyses
+            </span>
+        </article>
+
+        <article class="lv-stat">
+            <div class="lv-stat-top">
+                <div class="lv-stat-icon">🌿</div>
+            </div>
+
+            <strong class="lv-stat-number">
+                {% if healthy is defined %}
+                    {{ healthy }}
+                {% else %}
+                    —
+                {% endif %}
+            </strong>
+
+            <span class="lv-stat-label">
+                Healthy Plants
+            </span>
+        </article>
+
+        <article class="lv-stat">
+            <div class="lv-stat-top">
+                <div class="lv-stat-icon">🩺</div>
+            </div>
+
+            <strong class="lv-stat-number">
+                {% if diseased is defined %}
+                    {{ diseased }}
+                {% else %}
+                    —
+                {% endif %}
+            </strong>
+
+            <span class="lv-stat-label">
+                Disease Detections
+            </span>
+        </article>
+
+    </section>
+
+    <!-- RECENT ANALYSES -->
+    <section class="lv-panel">
+
+        <div class="lv-panel-header">
+            <h2>📋 Recent Plant Analyses</h2>
+            <p>Review your latest plant health detection results.</p>
+        </div>
+
+        {% if history is defined and history %}
+
+            <div class="lv-table-wrap">
+                <table class="lv-table">
+
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Plant Part</th>
+                            <th>Detected Condition</th>
+                            <th>Confidence</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in history %}
+
+                            <tr>
+                                <td>
+                                    {{ item.date|default(item.created_at|default('—', true), true) }}
+                                </td>
+
+                                <td>
+                                    {{ item.plant_part|default(item.plant|default('Tomato Leaf', true), true) }}
+                                </td>
+
+                                <td>
+                                    <span class="lv-disease">
+                                        {{ item.disease|default(item.result|default('Unknown', true), true)|replace('_', ' ') }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="lv-confidence">
+                                        {{ item.confidence|default(0, true) }}%
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if item.id is defined %}
+                                        <a class="lv-view"
+                                           href="{{ url_for('result', analysis_id=item.id) }}">
+                                            View Result →
+                                        </a>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        {% elif analyses is defined and analyses %}
+
+            <div class="lv-table-wrap">
+                <table class="lv-table">
+                    <thead>
+                        <tr>
+                            <th>Analysis</th>
+                            <th>Detected Condition</th>
+                            <th>Confidence</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in analyses[:10] %}
+                            <tr>
+                                <td>#{{ item['id'] }}</td>
+
+                                <td>
+                                    <span class="lv-disease">
+                                        {{ item['disease']|default('Unknown', true)|replace('_', ' ') }}
+                                    </span>
+                                </td>
+
+                                <td class="lv-confidence">
+                                    {{ item['confidence']|default(0, true) }}%
+                                </td>
+
+                                <td>
+                                    {{ item['created_at']|default('—', true) }}
+                                </td>
+
+                                <td>
+                                    <a class="lv-view"
+                                       href="{{ url_for('result', analysis_id=item['id']) }}">
+                                        View Result →
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% else %}
+
+            <div class="lv-empty">
+                <div class="lv-empty-icon">🌱</div>
+                <strong>No analysis records yet</strong>
+                Plant detection records will appear here after an analysis is completed.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- INFORMATION AND QUICK ACTIONS -->
+    <section class="lv-bottom">
+
+        <div class="lv-info">
+            <h3>💡 Smart Plant Health Monitoring</h3>
+            <p>
+                LeafVision AI helps identify potential tomato plant diseases
+                from uploaded images. Review detected conditions, confidence
+                scores, and disease-specific recommendations. For serious or
+                uncertain cases, consult a qualified agricultural expert.
+            </p>
+        </div>
+
+        <div class="lv-info">
+            <h3>⚡ Quick Actions</h3>
+            <p>Navigate quickly to the main areas of your application.</p>
+
+            <div class="lv-actions">
+                <a class="lv-action primary" href="{{ url_for('index') }}">
+                    🏠 Home
+                </a>
+
+                {% if current_role == 'admin' %}
+                    <a class="lv-action"
+                       href="{{ url_for('admin_dashboard') }}">
+                        📊 Admin Dashboard
+                    </a>
+                {% elif current_role == 'farmer' %}
+                    <a class="lv-action"
+                       href="{{ url_for('farmer_dashboard') }}">
+                        👨‍🌾 Farmer Workspace
+                    </a>
+                {% endif %}
+
+                <a class="lv-action" href="{{ url_for('logout') }}">
+                    ↪️ Logout
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}
